@@ -7,7 +7,9 @@ const path = require("path");
 const directoryPath = path.join(__dirname, "videos");
 const fs = require("fs");
 
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 const { getVideoDurationInSeconds } = require('get-video-duration');
 
 app.use(bodyParser.json());
