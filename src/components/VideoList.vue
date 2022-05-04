@@ -1,3 +1,25 @@
+<template>
+  <h1>Videos</h1>
+  <h3>{{ videos.length }}</h3>
+  <main>
+    <div
+      @click="openVideo(index)"
+      class="video-card"
+      v-for="(video, index) in this.videos"
+      v-bind:key="index"
+    >
+      <img
+        v-bind:src="
+          require('../../videos/thumbnails/' + video.replace('.mp4', '.png'))
+        "
+      />
+      <p>
+        {{ video.replace(".mp4", "") }}
+      </p>
+    </div>
+  </main>
+</template>
+
 <script>
 export default {
   data() {
@@ -11,31 +33,30 @@ export default {
       method: "get",
       url: "http://localhost:7077/api/get/videos",
     }).then(async (response) => {
-      console.log(response.data);
       this.videos = response.data;
-      // wait 3 seconds
     });
   },
-  methods: {},
+  methods: {
+    openVideo(index) {
+      axios({
+        method: "post",
+        url: "http://localhost:7077/api/post/launch",
+        data: {
+          video: this.videos[index],
+        },
+      }).then((response) => {
+        if (response.data !== "ok") {
+          window.alert("Error launching video \n \n" + response.data);
+        }
+      });
+    },
+  },
 };
 
 import axios from "axios";
 </script>
 
-<template>
-  <main>
-    <div class="video-card" v-for="video in this.videos" v-bind:key="video">
-      {{ video }}
-      <img
-        v-bind:src="
-          require('../../videos/thumbnails/' + video.replace('.mp4', '.png'))
-        "
-      />
-    </div>
-  </main>
-</template>
-
-<style>
+<style scoped>
 main {
   display: flex;
   flex-wrap: wrap;
@@ -44,13 +65,25 @@ main {
 .video-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: 192px;
-  height: 168px;
-  margin: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
+  height: 108px;
+
+  cursor: pointer;
+
+  margin: 0 20px 100px 20px;
+}
+
+p {
+  margin: 0;
+}
+
+h3 {
+  color: #42b983;
+  margin: 0 0 40px 0;
+}
+
+h1 {
+  margin: 0;
 }
 
 .video-card > img {
